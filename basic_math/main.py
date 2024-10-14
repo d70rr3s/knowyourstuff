@@ -51,18 +51,17 @@ def generate_expression():
 
 
 def main():
+    # Generate and print three expressions without results
+    for _ in range(3):
+        expression = generate_expression()
+        print(expression.split('=')[0].strip())
     passphrase = os.getenv('SHELDON')
     user_input = input("Enter the passphrase to view the results: ")
     if user_input == passphrase:
         # Generate and print three expressions with results
         for _ in range(3):
             expression = generate_expression()
-            print(expression)
-    else:
-        # Generate and print three expressions without results
-        for _ in range(3):
-            expression = generate_expression()
-            print(expression.split('=')[0].strip())
+            print(expression.split('=')[1].strip())
 
 
 if __name__ == "__main__":
