@@ -29,7 +29,8 @@ setup(
     version="1.1.0",
     packages=find_packages(),
     install_requires=[
-        "python-dotenv"
+        "python-dotenv",
+        "pyperclip"
     ],
     entry_points={
         "console_scripts": [

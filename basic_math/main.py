@@ -24,44 +24,47 @@ SOFTWARE.
 
 import random
 import os
+import pyperclip
+import getpass
 
 
 def generate_expression():
-    operations = ['+', '-', '*', '/']
     while True:
-        # Randomly generate numbers
-        a, b, c, d = random.randint(1, 20), random.randint(1, 20), random.randint(1, 20), random.randint(1, 20)
+        # Randomly generate single-digit numbers
+        a, b, c, d = random.randint(1, 9), random.randint(1, 9), random.randint(1, 9), random.randint(1, 9)
 
-        # Randomly select operations
-        op1, op2, op3 = random.choice(operations), random.choice(operations), random.choice(operations)
+        # Pair operations: multiplication with subtraction, and division with addition
+        if b > a:
+            a, b = b, a  # Ensure subtraction is valid
+        if d == 0:
+            d = random.randint(1, 9)  # Avoid division by zero
+        if c % d != 0:
+            continue  # Ensure division has no remainder
 
-        # Create an expression using random operations
-        expression = f'({a} {op1} {b}) {op2} ({c} {op3} {d})'
+        # Create an expression using all operations
+        expression = f'({a} * {b}) - ({c} / {d}) + {random.randint(1, 9)}'
         try:
             result = eval(expression)
-            if isinstance(result, float):
-                result = round(result)
-            result = abs(result)  # Get absolute value if negative
+            result = round(abs(result))  # Get absolute value if negative
             # Ensure the result is a two-digit number
             if 10 <= result < 100:
                 return f'{expression} = {result}'
         except ZeroDivisionError:
-            # Skip expressions that result in division by zero
             continue
 
 
 def main():
-    # Generate and print three expressions without results
+    results = []
     for _ in range(3):
         expression = generate_expression()
         print(expression.split('=')[0].strip())
+        results.append(expression.split('=')[1].strip())
+
     passphrase = os.getenv('SHELDON')
-    user_input = input("Enter the passphrase to view the results: ")
+    user_input = getpass.getpass("Enter the passphrase to view the results: ")
     if user_input == passphrase:
-        # Generate and print three expressions with results
-        for _ in range(3):
-            expression = generate_expression()
-            print(expression.split('=')[1].strip())
+        pyperclip.copy('\n'.join(results))
+        print("Results have been copied to the clipboard.")
 
 
 if __name__ == "__main__":
